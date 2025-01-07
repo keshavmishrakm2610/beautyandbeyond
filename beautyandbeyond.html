@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beauty and Beyond</title>
+    <style>
+        /* Styling remains the same as before */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #FF70A6;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .container {
+            max-width: 700px;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 28px;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .service {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+        .service-card {
+            flex: 1 1 calc(50% - 10px);
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .service-card input {
+            display: none;
+        }
+        .service-card span {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        .service-card input:checked + span {
+            color: white;
+            background-color: #FF70A6;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 18px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            color: #333;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #FF70A6;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #FF70A6;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #e55b8b;
+        }
+        .note {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #888;
+        }
+        .footer a {
+            color: #FF70A6;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Beauty & Beyond
+    </header>
+    
+    <div class="container">
+        <h1 id="formTitle">Book Your Appointment</h1>
+        <form id="bookingForm" onsubmit="return validateForm()">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" placeholder="Enter your name" required>
+            
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="Enter your phone number" pattern="[0-9]{10}" required>
+            
+            <label for="services">Choose Services (Select multiple)</label>
+            <div id="services" class="service">
+                <label class="service-card">
+                    <input type="checkbox" id="gel-polish" value="Gel polish - ₹499">
+                    <span>Gel polish - ₹499</span>
+                </label>
+                <label class="service-card">
+                    <input type="checkbox" id="temporary-extension" value="Temporary extension - ₹699">
+                    <span>Temporary extension - ₹699</span>
+                </label>
+                <label class="service-card">
+                    <input type="checkbox" id="acrylic-gel-extensions" value="Acrylic/Gel extensions - ₹1499">
+                    <span>Acrylic/Gel extensions - ₹1499</span>
+                </label>
+                <label class="service-card">
+                    <input type="checkbox" id="refills" value="Refills - ₹699">
+                    <span>Refills - ₹699</span>
+                </label>
+                <label class="service-card">
+                    <input type="checkbox" id="overlays" value="Overlay's - ₹699">
+                    <span>Overlay's - ₹699</span>
+                </label>
+                <label class="service-card">
+                    <input type="checkbox" id="removal" value="Removal - ₹499">
+                    <span>Removal - ₹499</span>
+                </label>
+            </div>
+            
+            <div class="note">
+                Note: Art is charged per finger.
+            </div>
+            
+            <label for="date">Preferred Date</label>
+            <input type="date" id="date" required>
+            
+            <label for="message">Special Requests (Optional)</label>
+            <textarea id="message" placeholder="Any special requests?"></textarea>
+            
+            <button type="submit">Book Appointment</button>
+        </form>
+
+        <div id="confirmationMessage" style="display: none;">
+            <h2>Thank you for booking your appointment!</h2>
+            <p>Your appointment has been successfully booked. We will contact you shortly.</p>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Created with ❤️ by <a href="#">Beauty and Beyond</a></p>
+    </div>
+
+    <script>
+        async function sendToServer(name, phone, date, services, specialRequest) {
+            const selectedServices = services.map(service => service.value).join(", ");
+            const message = `Name: ${name}\nPhone: ${phone}\nServices: ${selectedServices}\nDate: ${date}\nSpecial Requests: ${specialRequest || 'None'}`;
+            const customerMessage = `Thank you for booking your appointment!\nYour appointment has been successfully booked.\nServices: ${selectedServices}\nDate: ${date}\nSpecial Requests: ${specialRequest || 'None'}`;
+
+            const url = 'https://api.ultramsg.com/instance103391/messages/chat';
+            const token = 'nd9qkjxn2z8zj6qv';
+            const adminPhone = '9137186885'; // Admin phone number
+            
+            try {
+                // Send to admin (you)
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token,
+                        to: `91${adminPhone}`,
+                        body: message,
+                        priority: 10
+                    })
+                });
+
+                // Send confirmation to customer
+                await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        token,
+                        to: `91${phone}`,
+                        body: customerMessage,
+                        priority: 10
+                    })
+                });
+
+            } catch (error) {
+                console.error('Error sending WhatsApp message:', error);
+            }
+        }
+
+        function validateForm() {
+            const name = document.getElementById("name").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const date = document.getElementById("date").value;
+            const services = Array.from(document.querySelectorAll('#services input[type="checkbox"]:checked'));
+            const specialRequest = document.getElementById("message").value.trim();
+            
+            if (!name || !phone || !date || services.length === 0) {
+                alert("All fields except 'Special Requests' are mandatory.");
+                return false;
+            }
+
+            if (phone.length !== 10 || isNaN(phone)) {
+                alert("Please enter a valid 10-digit phone number.");
+                return false;
+            }
+
+            sendToServer(name, phone, date, services, specialRequest);
+
+            document.getElementById("bookingForm").style.display = "none";
+            document.getElementById("formTitle").style.display = "none";
+            document.getElementById("confirmationMessage").style.display = "block";
+            return false;
+        }
+    </script>
+</body>
+</html>
